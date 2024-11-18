@@ -20,16 +20,16 @@ services:
       - db
       - redis
   db:
-    image: mysql:8.0
+    image: postgres:15.9-alpine3.20
+    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: minesweeper
-      MYSQL_USER: minesweeper
-      MYSQL_PASSWORD: password
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: postgres
+      POSTGRES_DATABASE: minesweeper
     ports:
-      - "3333:3306"
+      - "5433:5432"
     volumes:
-      - ./db_volume/mysql_data:/var/lib/mysql
+      - ./db_volume/postgresql_data:/var/lib/postgresql
 
   redis:
     image: redis:7.0-alpine
