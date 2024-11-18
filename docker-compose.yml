@@ -17,19 +17,18 @@ services:
     env_file:
       - web.env
     depends_on:
-      - db
       - redis
-  db:
-    image: postgres:15.9-alpine3.20
-    restart: always
-    environment:
-      POSTGRES_PASSWORD: password
-      POSTGRES_USER: postgres
-      POSTGRES_DATABASE: minesweeper
-    ports:
-      - "5433:5432"
-    volumes:
-      - ./db_volume/postgresql_data:/var/lib/postgresql
+  # db:
+  #   image: postgres:15.9-alpine3.20
+  #   restart: always
+  #   environment:
+  #     POSTGRES_PASSWORD: password
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DATABASE: minesweeper
+  #   ports:
+  #     - "5433:5432"
+  #   volumes:
+  #     - ./db_volume/postgresql_data:/var/lib/postgresql
 
   redis:
     image: redis:7.0-alpine

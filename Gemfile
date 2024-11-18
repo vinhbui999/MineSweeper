@@ -6,7 +6,7 @@ ruby '3.3.6'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 7.2'
 # Use postgresql to deploy heroku
-gem 'pg', '~> 1.5.4'
+gem 'sqlite3'
 # Use Puma as the app server
 gem 'puma', '~> 6.0'
 # Use SCSS for stylesheets

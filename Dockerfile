@@ -4,7 +4,8 @@ FROM ruby:3.3.6
 RUN apt-get update -qq && \
     apt-get install -y \
     ffmpeg \
-    cron
+    cron \
+    libsqlite3-dev
 
 ENV RAILS_ROOT /app
 
