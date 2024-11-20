@@ -19,6 +19,7 @@ services:
     depends_on:
       - redis
       - db
+      - sidekiq
   db:
     image: mysql:8.0
     environment:
