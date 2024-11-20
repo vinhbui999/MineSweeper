@@ -31,7 +31,4 @@ test:
 
 production:
   <<: *default
-  host: <%= ENV.fetch('DB_HOST') { '127.0.0.1' } %>
-  database: <%= ENV.fetch('DB_NAME_DEV') { 'minesweeper_prod' } %>
-  username: <%= ENV.fetch('DB_USERNAME') { 'root' } %>
-  password: <%= ENV.fetch('DB_PASSWORD') { '12345678' } %>
+  url: <%= ENV['JAWSDB_URL'] %>
