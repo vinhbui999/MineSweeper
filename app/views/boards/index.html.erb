@@ -1,0 +1,44 @@
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Boards" %>
+
+<h1 style="text-align: center;">All Boards</h1>
+
+<div class="table-container">
+  <table class="table ">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Creator Email</th>
+        <th>Dimension</th>
+        <th>Number of Mines</th>
+        <th>Created At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @boards.each do |board| %>
+        <tr>
+          <td><%= link_to board.name, board %></td>
+          <td><%= board.creator.email %></td>
+          <td><%= "#{board.width}x#{board.height}" %></td>
+          <td><%= board.number_of_mines %></td>
+          <td><%= board.formatted_created_date%></td>
+          <td id="link-decoration">
+            <%= link_to 'Show', board %>
+            <span>|</span>
+            <%= link_to 'Destroy', board, method: :delete, data: { confirm: 'Are you sure?' } %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<div class="pagination">
+  <%= paginate @boards %>
+</div>
+
+<h4 id="link-decoration">
+  <%= link_to "Generate new board", root_path %>
+</h4>

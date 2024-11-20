@@ -1,0 +1,16 @@
+
+<h1 style="text-align: center;">Recent Boards</h1>
+
+<div id="boards">
+  <% ten_boards.each do |board| %>
+    <div class="board-item">
+    <%= render board %>
+    </div>
+  <% end %>
+</div>
+
+<div style="text-align: center;">
+  <h3 id="link-decoration">
+    <%= link_to "View all generated boards", all_boards_path %>
+  </h3>
+</div>

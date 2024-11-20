@@ -1,0 +1,103 @@
+<div  class="board-detail <%= action_name == "show" ? "sub-detail" : ""%>">
+  <div id="<%= dom_id board %>">
+    <p>
+      <strong>Board Name:</strong>
+      <%= link_to board.name, board %>
+    </p>
+
+    <p>
+      <strong>Creator:</strong>
+      <%= board.creator.email %>
+    </p>
+
+    <p>
+      <strong>Dimension:</strong>
+      <%= "#{board.width}x#{board.height}" %>
+    </p>
+
+    <p>
+      <strong>Number of Mines:</strong>
+      <%= board.number_of_mines %>
+    </p>
+
+    <p>
+      <strong>Created At:</strong>
+      <%= board.formatted_created_date%>
+    </p>
+
+
+  </div>
+  <br/>
+  <% if action_name == "show" %>
+    <div id="board-container" style="width: 1000px; height: 500px; overflow: auto;">
+      <canvas id="minesweeperBoard"></canvas>
+    </div>
+
+
+    <script>
+      const cols = <%= @cols %>;
+      const rows = <%= @rows %>;
+      const number_of_mines = <%= @number_of_mines %>;
+      const mineDataUrl = '<%= mines_board_path(@board) %>';
+      let page = 0;
+      const perPage = 100; // Number of cells to load per request
+
+      document.addEventListener('DOMContentLoaded', function() {
+        const canvas = document.getElementById('minesweeperBoard');
+        const ctx = canvas.getContext('2d');
+        let cellSize = 15;
+        
+        if (rows * cols > 1000 && number_of_mines > 200) {
+          cellSize = 15;
+        } else if (rows * cols > 400 && number_of_mines > 100) {
+          cellSize = 20;
+        } else {
+          cellSize = 25;
+        }
+
+        canvas.width = cols * cellSize
+        canvas.height = rows * cellSize
+        let mineData = [];
+
+        fetch(`${mineDataUrl}?page=${page}&per_page=${perPage}`) 
+          .then(response => response.json()) 
+          .then(data => { 
+            mineData = data.mines;
+            renderBoard(); 
+          }); 
+        
+
+        function renderBoard() {
+          for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+              const x = col * cellSize;
+              const y = row * cellSize;
+
+              ctx.strokeStyle = 'black';
+              ctx.lineWidth = 1;
+              ctx.strokeRect(x, y, cellSize, cellSize);
+              ctx.fillStyle = 'white';
+              ctx.fillRect(x, y, cellSize, cellSize);
+
+              const mineCell = mineData.find(cell => cell.row === row && cell.col === col);
+              if (mineCell) {
+                <%# ctx.fillStyle = 'red'; %>
+                ctx.fillRect(x, y, cellSize, cellSize);
+                ctx.fillStyle = 'black';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = `${cellSize * 0.75}px Arial`; // Adjust font size
+                ctx.fillText('💣', x + cellSize / 2, y + cellSize / 2);
+              }
+            }
+          }
+        }
+        });
+
+    </script>
+
+
+  <% end %>
+
+
+</div>
