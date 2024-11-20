@@ -27,7 +27,10 @@
           <td id="link-decoration">
             <%= link_to 'Show', board %>
             <span>|</span>
-            <%= link_to 'Destroy', board, method: :delete, data: { confirm: 'Are you sure?' } %>
+            <%= link_to 'Destroy', board_path(board), data: {
+                    turbo_method: :delete,
+                    turbo_confirm: "Are you sure?"
+                  } %>
           </td>
         </tr>
       <% end %>

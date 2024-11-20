@@ -20,7 +20,7 @@ class GenerateCellsWithMinesService < ApplicationService
         next if existed_index[random_index.to_s] == 'true'
 
         coordinates << get_coordinates(random_index, board.width)
-        existed_index.merge!("#{random_index}" => 'true')
+        existed_index.merge!(random_index.to_s => 'true')
         break
       end
     end
