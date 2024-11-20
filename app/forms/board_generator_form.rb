@@ -38,6 +38,6 @@ class BoardGeneratorForm
   def valid_input_mines
     return unless number_of_mines.present?
 
-    errors.add(:number_of_mines, :invalid_number_of_mines) if number_of_mines.to_i > (height.to_i * width.to_i)
+    errors.add(:number_of_mines, "invalid number of Mines") if number_of_mines.to_i > (height.to_i * width.to_i)
   end
 end
