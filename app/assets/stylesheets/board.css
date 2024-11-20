@@ -1,0 +1,132 @@
+/* LIST BOARD */
+table.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1em;
+  font-family: sans-serif;
+  text-align: left;
+}
+
+table.table thead tr {
+  background-color: #565d63;
+  color: #ffffff;
+  text-align: left;
+  font-weight: bold;
+}
+
+table.table th,
+table.table td {
+  padding: 12px 15px;
+}
+
+table.table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+table.table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+table.table tbody tr:last-of-type {
+  border-bottom: 2px solid #727f88;
+}
+
+.table-container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.pagination {
+  text-align: center;
+}
+
+.pagination a,
+.pagination span {
+  color: #050606;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.pagination a:hover {
+  background-color: #dddddd;
+}
+
+.board {
+  display: inline-block;
+  /* border: 1px solid #ccc; */
+  padding: 10px;
+}
+
+.row {
+  display: flex;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cell.mine {
+  /* background-color: #f2a3a3; */
+}
+
+.board-item {
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px 10px 0;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+#boards {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  margin: 10px;
+  /* p {
+    overflow-wrap: break-word;
+  } */
+}
+
+#board-generator {
+  #board-inner-form {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    border: 2px solid #8a8a6c;
+    padding: 10px;
+  }
+}
+
+#link-decoration {
+  a {
+    text-decoration: none;
+  }
+}
+.board-detail {
+  max-width: fit-content;
+  margin-right: auto;
+  p {
+    overflow-wrap: anywhere;
+  }
+}
+
+.sub-detail {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  > div[id^="board_"] {
+    border: 1px solid black;
+    p {
+      margin-left: 10%;
+    }
+  }
+  #board-container {
+    text-align: center;
+  }
+}

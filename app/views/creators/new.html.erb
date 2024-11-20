@@ -1,0 +1,12 @@
+<div id="board-generator">
+  <div id="board-inner-form">
+    <% content_for :title, "Generate new board" %>
+
+    <h1>Generate new board</h1>
+
+    <%= render "form", creator: @creator %>
+  </div>
+</div>
+<br>
+
+<%= render partial: "boards/latest_ten_board", locals: {ten_boards: ten_boards}%>
