@@ -61,11 +61,8 @@ class BoardsController < ApplicationController
 
   def get_mines
     board = Board.find_by_id(params[:id])
-    @page = params[:page].to_i
-    @per_page = params[:per_page].to_i
-    offset = @page * @per_page
-    @mines = board.cells.offset(offset).limit(@per_page).map { |a| { 'row': a.row, 'col': a.col, 'mine': true } }
-    render json: { mines: @mines, page: @page, per_page: @per_page, total: board.cells.count }
+    @mines = board.cells.map { |a| { 'row': a.row, 'col': a.col, 'mine': true } }
+    render json: { mines: @mines }
   end
 
   private
