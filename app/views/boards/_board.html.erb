@@ -64,7 +64,6 @@
                     .then(response => response.json()) 
                     .then(data => {
                       mineData = [...mineData, ...data.mines];
-                      console.log(data.mines)
                       max_page = data.max_page;
                       page++;
                       renderBoard();
