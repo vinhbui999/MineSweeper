@@ -53,8 +53,10 @@ class BoardsController < ApplicationController
 
   # DELETE /boards/1 or /boards/1.json
   def destroy
-    DestroyBoardJob.perform_later(@board.id)
+    board_id = @board.id
     @board.delete
+
+    DestroyBoardJob.perform_later(board_id)
 
     redirect_to all_boards_path, status: :see_other, notice: 'Board was successfully destroyed.'
   end
