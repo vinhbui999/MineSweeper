@@ -12,7 +12,7 @@
 
     <p>
       <strong>Dimension:</strong>
-      <%= "#{board.width}x#{board.height}" %>
+      <%= "#{board.height}x#{board.width}" %>
     </p>
 
     <p>
@@ -40,9 +40,10 @@
       const number_of_mines = <%= @number_of_mines %>;
       const mineDataUrl = '<%= mines_board_path(@board) %>';
       let page = 0;
-      const perPage = 100; // Number of cells to load per request
+      const perPage = 10000;
 
       document.addEventListener('DOMContentLoaded', function() {
+        const container = document.getElementById('board-container');
         const canvas = document.getElementById('minesweeperBoard');
         const ctx = canvas.getContext('2d');
         let cellSize = 15;
@@ -52,18 +53,24 @@
         } else if (rows * cols > 400 && number_of_mines > 100) {
           cellSize = 20;
         }
-
         canvas.width = cols * cellSize
         canvas.height = rows * cellSize
-        let mineData = [];
 
-        fetch(`${mineDataUrl}`) 
-          .then(response => response.json()) 
-          .then(data => { 
-            mineData = data.mines;
-            renderBoard(); 
-          }); 
+        let mineData = [];
+        let max_page = 0;
+
+        function loadMineData(){
+          fetch(`${mineDataUrl}?page=${page}&per_page=${perPage}`) 
+                    .then(response => response.json()) 
+                    .then(data => {
+                      mineData = [...mineData, ...data.mines];
+                      console.log(data.mines)
+                      max_page = data.max_page;
+                      page++;
+                      renderBoard();
+                    }); 
         
+        }
 
         function renderBoard() {
           for (let row = 0; row < rows; row++) {
@@ -79,7 +86,6 @@
 
               const mineCell = mineData.find(cell => cell.row === row && cell.col === col);
               if (mineCell) {
-                <%# ctx.fillStyle = 'red'; %>
                 ctx.fillRect(x, y, cellSize, cellSize);
                 ctx.fillStyle = 'black';
                 ctx.textAlign = 'center';
@@ -90,6 +96,40 @@
             }
           }
         }
+
+        function debounce(func, wait) {
+          let timeout;
+          return function(...args) {
+            const later = () => {
+              clearTimeout(timeout);
+              func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+          };
+        }
+
+        const loadMineWithDebounced = debounce(loadMineData, 500);
+
+
+        container.addEventListener('scroll', () => {
+          const scrollTop = container.scrollTop; 
+          const scrollHeight = container.scrollHeight; 
+          const clientHeight = container.clientHeight; 
+          const scrollLeft = container.scrollLeft; 
+          const scrollWidth = container.scrollWidth; 
+          const clientWidth = container.clientWidth;
+
+          const nearBottom = scrollTop + clientHeight >= (scrollHeight - clientHeight) / 4; 
+          const nearRightEdge = scrollLeft + clientWidth >= (scrollWidth - clientWidth) / 4;
+
+          if ((nearBottom || nearRightEdge) && page <= max_page) {
+            loadMineWithDebounced()
+          }
+        });
+
+        renderBoard();
+        loadMineData();
         });
 
     </script>
