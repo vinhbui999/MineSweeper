@@ -15,7 +15,7 @@ class CreatorsController < ApplicationController
   def new
     # @creator = Creator.new
     @board_generator = BoardGeneratorForm.new
-    @ten_boards = Board.order(id: :desc).first(10)
+    @ten_boards = Board.includes(:creator).order(id: :desc).first(10)
     render :new, locals: { ten_boards: @ten_boards || [] }
   end
 
@@ -30,7 +30,7 @@ class CreatorsController < ApplicationController
       GenerateCellsWithMinesService.call(generated_board)
       redirect_to generated_board
     else
-      render :new, locals: { ten_boards: Board.order(id: :desc).first(10) || [] }
+      render :new, locals: { ten_boards: Board.includes(:creator).order(id: :desc).first(10) || [] }
     end
   end
 
