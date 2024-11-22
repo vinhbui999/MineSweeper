@@ -35,8 +35,9 @@
 
 
     <script>
-      const cols = <%= @cols %>;
-      const rows = <%= @rows %>;
+      const total_cols = <%= @cols %>;
+      const total_rows = <%= @rows %>;
+      let cols, rows;
       const number_of_mines = <%= @number_of_mines %>;
       const mineDataUrl = '<%= mines_board_path(@board) %>';
       let page = 0;
@@ -48,13 +49,13 @@
         const ctx = canvas.getContext('2d');
         let cellSize = 15;
         
-        if (rows * cols > 1000 && number_of_mines > 200) {
-          cellSize = 15;
-        } else if (rows * cols > 400 && number_of_mines > 100) {
+        if (total_rows * total_cols > 10000 && number_of_mines > 200) {
+          cellSize = 10;
+        } else if (total_rows * total_cols > 400 && number_of_mines > 100) {
           cellSize = 20;
         }
-        canvas.width = cols * cellSize
-        canvas.height = rows * cellSize
+        canvas.width = total_cols * cellSize
+        canvas.height = total_rows * cellSize
 
         let mineData = [];
         let max_page = 0;
@@ -71,11 +72,24 @@
         
         }
 
+        function calculateVisibleDimensions() { 
+          // Calculate number of rows, cols can able to display in the container view with cellSize
+          rows = Math.floor(container.clientHeight / cellSize); 
+          cols = Math.floor(container.clientWidth / cellSize); 
+        }
+
         function renderBoard() {
-          for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
+
+          // Determine which row is topmost, col is leftmost
+          // From it and start drawing
+          const startRow = Math.floor(container.scrollTop / cellSize); 
+          const startCol = Math.floor(container.scrollLeft / cellSize);
+
+          // ensure drawing rows, cols less than or equal to inputed ones
+          for (let row = startRow; row < Math.min(startRow + Math.floor(container.clientHeight / cellSize), total_rows); row++) {
+            for (let col = startCol; col < Math.min(startCol + Math.floor(container.clientWidth / cellSize), total_cols); col++) {
               const x = col * cellSize;
-              const y = row * cellSize;
+              const y = (row + 1) * cellSize;
 
               ctx.strokeStyle = 'black';
               ctx.lineWidth = 1;
@@ -125,9 +139,11 @@
           if ((nearBottom || nearRightEdge) && page <= max_page) {
             loadMineWithDebounced()
           }
+          renderBoard();
+          // continuos render board
         });
 
-        renderBoard();
+        calculateVisibleDimensions();
         loadMineData();
         });
 
