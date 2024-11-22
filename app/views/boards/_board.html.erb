@@ -29,8 +29,8 @@
   </div>
   <br/>
   <% if action_name == "show" %>
-    <div id="board-container" style="width: 1000px; height: 500px; overflow: auto;">
-      <canvas id="minesweeperBoard"></canvas>
+    <div id="board-container" style="width: 1200px; height: 500px; overflow: auto;">
+      <canvas id="minesweeperBoard" width="1500" height="1000"></canvas>
     </div>
 
 
@@ -47,16 +47,28 @@
         const container = document.getElementById('board-container');
         const canvas = document.getElementById('minesweeperBoard');
         const ctx = canvas.getContext('2d');
+
+        const scrollTop = container.scrollTop; 
+        const scrollHeight = container.scrollHeight; 
+        const clientHeight = container.clientHeight; 
+        const scrollLeft = container.scrollLeft; 
+        const scrollWidth = container.scrollWidth; 
+        const clientWidth = container.clientWidth;
+
+        const nearBottom = scrollTop + clientHeight >= (scrollHeight - clientHeight) / 4; 
+        const nearRightEdge = scrollLeft + clientWidth >= (scrollWidth - clientWidth) / 4;
+
         let cellSize = 15;
-        
+
         if (total_rows * total_cols > 10000 && number_of_mines > 200) {
           cellSize = 10;
         } else if (total_rows * total_cols > 400 && number_of_mines > 100) {
           cellSize = 20;
         }
-        canvas.width = total_cols * cellSize
-        canvas.height = total_rows * cellSize
+        //canvas.width = total_cols * cellSize
+        //canvas.height = total_rows * cellSize
 
+        console.log(cellSize);
         let mineData = [];
         let max_page = 0;
 
@@ -122,25 +134,27 @@
           };
         }
 
+        function increaseCanvasSize(){
+          if (canvas.height < total_rows * cellSize) { 
+            canvas.height = Math.min(canvas.height + clientHeight, total_rows * cellSize); 
+            } 
+          if ( canvas.width < total_cols * cellSize) { 
+            canvas.width = Math.min(canvas.width + clientWidth, total_cols * cellSize); 
+          }
+          renderBoard();
+        }
+
         const loadMineWithDebounced = debounce(loadMineData, 500);
 
 
         container.addEventListener('scroll', () => {
-          const scrollTop = container.scrollTop; 
-          const scrollHeight = container.scrollHeight; 
-          const clientHeight = container.clientHeight; 
-          const scrollLeft = container.scrollLeft; 
-          const scrollWidth = container.scrollWidth; 
-          const clientWidth = container.clientWidth;
-
-          const nearBottom = scrollTop + clientHeight >= (scrollHeight - clientHeight) / 4; 
-          const nearRightEdge = scrollLeft + clientWidth >= (scrollWidth - clientWidth) / 4;
 
           if ((nearBottom || nearRightEdge) && page <= max_page) {
             loadMineWithDebounced()
           }
-          renderBoard();
+          increaseCanvasSize()
           // continuos render board
+          renderBoard();
         });
 
         calculateVisibleDimensions();
