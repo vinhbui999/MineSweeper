@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let page = 1;
   let { visibleRows, visibleCols } = calculateVisibleDimensions();
 
-  const perPage = visibleCols * visibleRows * cellSize * cellSize;
+  const perPage = visibleCols * visibleRows * cellSize;
 
   async function loadMineData(
     startRow,
