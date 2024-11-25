@@ -35,11 +35,6 @@ class GenerateCellsWithMinesService < ApplicationService
   end
 
   def create_mines_cells(mines_coordinates)
-    # threads = []
-    # mines_coordinates.each_slice(10) do |slice|
-    #   threads << Thread.new { Cell.create!(slice) }
-    # end
-    # threads.each(&:join)
     Cell.insert_all(mines_coordinates)
   end
 end

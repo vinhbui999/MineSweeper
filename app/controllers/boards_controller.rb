@@ -65,13 +65,13 @@ class BoardsController < ApplicationController
     board = Board.find_by_id(params[:id])
     cells = board.cells
 
-    @page = params[:page].to_i
+    @page = (params[:page] || 1).to_i
     @per_page = params[:per_page].to_i
     max_page = (cells.count.to_f / @per_page).ceil
-    offset = @page * @per_page
+    offset = @page.eql?(1) ? 0 : (@page - 1) * @per_page
 
-    @mines = cells.offset(offset).limit(@per_page).map { |a| { 'row': a.row, 'col': a.col, 'mine': true } }
-    render json: { mines: @mines, max_page: max_page }
+    @mines = cells.offset(offset).limit(@per_page).order(:row, :col).map { |a| { 'row': a.row, 'col': a.col, 'mine': true } }
+    render json: { mines: @mines, max_page: max_page , current_page: @page}
   end
 
   private

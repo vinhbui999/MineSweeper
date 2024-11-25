@@ -29,138 +29,24 @@
   </div>
   <br/>
   <% if action_name == "show" %>
-    <div id="board-container" style="width: 1200px; height: 500px; overflow: auto;">
-      <canvas id="minesweeperBoard" width="1500" height="1000"></canvas>
+    <div id="board-container" style="width: 1000px; height: 500px; overflow: auto;">
+      <canvas id="minesweeperBoard" width="1000" height="500"></canvas>
+    </div>
+    <div> 
+      <button id="loadLeft">Load Left</button> 
+      <button id="loadRight">Load Right</button> 
+      <button id="loadUp">Load Up</button> 
+      <button id="loadDown">Load Down</button>
     </div>
 
 
     <script>
       const total_cols = <%= @cols %>;
       const total_rows = <%= @rows %>;
-      let cols, rows;
+
       const number_of_mines = <%= @number_of_mines %>;
-      const mineDataUrl = '<%= mines_board_path(@board) %>';
-      let page = 0;
-      const perPage = 10000;
 
-      document.addEventListener('DOMContentLoaded', function() {
-        const container = document.getElementById('board-container');
-        const canvas = document.getElementById('minesweeperBoard');
-        const ctx = canvas.getContext('2d');
-
-        const scrollTop = container.scrollTop; 
-        const scrollHeight = container.scrollHeight; 
-        const clientHeight = container.clientHeight; 
-        const scrollLeft = container.scrollLeft; 
-        const scrollWidth = container.scrollWidth; 
-        const clientWidth = container.clientWidth;
-
-        const nearBottom = scrollTop + clientHeight >= (scrollHeight - clientHeight) / 4; 
-        const nearRightEdge = scrollLeft + clientWidth >= (scrollWidth - clientWidth) / 4;
-
-        let cellSize = 15;
-
-        if (total_rows * total_cols > 10000 && number_of_mines > 200) {
-          cellSize = 10;
-        } else if (total_rows * total_cols > 400 && number_of_mines > 100) {
-          cellSize = 20;
-        }
-        //canvas.width = total_cols * cellSize
-        //canvas.height = total_rows * cellSize
-
-        console.log(cellSize);
-        let mineData = [];
-        let max_page = 0;
-
-        function loadMineData(){
-          fetch(`${mineDataUrl}?page=${page}&per_page=${perPage}`) 
-                    .then(response => response.json()) 
-                    .then(data => {
-                      mineData = [...mineData, ...data.mines];
-                      max_page = data.max_page;
-                      page++;
-                      renderBoard();
-                    }); 
-        
-        }
-
-        function calculateVisibleDimensions() { 
-          // Calculate number of rows, cols can able to display in the container view with cellSize
-          rows = Math.floor(container.clientHeight / cellSize); 
-          cols = Math.floor(container.clientWidth / cellSize); 
-        }
-
-        function renderBoard() {
-
-          // Determine which row is topmost, col is leftmost
-          // From it and start drawing
-          const startRow = Math.floor(container.scrollTop / cellSize); 
-          const startCol = Math.floor(container.scrollLeft / cellSize);
-
-          // ensure drawing rows, cols less than or equal to inputed ones
-          for (let row = startRow; row < Math.min(startRow + Math.floor(container.clientHeight / cellSize), total_rows); row++) {
-            for (let col = startCol; col < Math.min(startCol + Math.floor(container.clientWidth / cellSize), total_cols); col++) {
-              const x = col * cellSize;
-              const y = (row + 1) * cellSize;
-
-              ctx.strokeStyle = 'black';
-              ctx.lineWidth = 1;
-              ctx.strokeRect(x, y, cellSize, cellSize);
-              ctx.fillStyle = 'white';
-              ctx.fillRect(x, y, cellSize, cellSize);
-
-              const mineCell = mineData.find(cell => cell.row === row && cell.col === col);
-              if (mineCell) {
-                ctx.fillRect(x, y, cellSize, cellSize);
-                ctx.fillStyle = 'black';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.font = `${cellSize * 0.75}px Arial`; // Adjust font size
-                ctx.fillText('💣', x + cellSize / 2, y + cellSize / 2);
-              }
-            }
-          }
-        }
-
-        function debounce(func, wait) {
-          let timeout;
-          return function(...args) {
-            const later = () => {
-              clearTimeout(timeout);
-              func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-          };
-        }
-
-        function increaseCanvasSize(){
-          if (canvas.height < total_rows * cellSize) { 
-            canvas.height = Math.min(canvas.height + clientHeight, total_rows * cellSize); 
-            } 
-          if ( canvas.width < total_cols * cellSize) { 
-            canvas.width = Math.min(canvas.width + clientWidth, total_cols * cellSize); 
-          }
-          renderBoard();
-        }
-
-        const loadMineWithDebounced = debounce(loadMineData, 500);
-
-
-        container.addEventListener('scroll', () => {
-
-          if ((nearBottom || nearRightEdge) && page <= max_page) {
-            loadMineWithDebounced()
-          }
-          increaseCanvasSize()
-          // continuos render board
-          renderBoard();
-        });
-
-        calculateVisibleDimensions();
-        loadMineData();
-        });
-
+      const mineDataUrl = "<%= mines_board_path(@board) %>";
     </script>
 
 
